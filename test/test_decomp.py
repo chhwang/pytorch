@@ -293,6 +293,8 @@ CROSS_REF_EXCLUDE_SET = {
     (None, None, "meshgrid"),
     # diag was not decomposed (it just registers a decomp for diag_out, torch.diag is CompImplicit)
     (None, None, "diag"),
+    # native_batch_norm is only implicit when python dispatcher is on (and noncomposite otherwise)
+    (None, None, "native_batch_norm"),
 }
 
 CROSS_REF_BACKWARD_EXCLUDE_SET = {
