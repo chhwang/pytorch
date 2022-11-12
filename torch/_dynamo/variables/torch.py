@@ -283,6 +283,7 @@ class TorchVariable(VariableTracker):
         elif self.value in (
             torch.profiler.profile,
             torch.profiler.record_function,
+            torch.autograd.profiler.dummy,
             torch.autograd.profiler.profile,
             torch.autograd.profiler.record_function,
         ):
