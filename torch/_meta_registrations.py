@@ -1166,6 +1166,11 @@ def meta_binop_inplace_alpha(self, other, alpha=1):
     return self
 
 
+@register_meta([aten.round.default, aten.round.decimals])
+def meta_round(self, **kwargs):
+    return self.new_empty(self.shape)
+
+
 @register_meta(aten.zero.default)
 def meta_zero(self):
     return self.new_empty(self.shape)
@@ -1472,6 +1477,25 @@ def meta_max_pool2d_with_indices(
             size, dtype=torch.int64, device=input.device, memory_format=memory_format
         ),
     )
+
+
+@register_meta(aten.grid_sampler_2d_backward.default)
+def grid_sampler_2d_backward_meta(
+    grad_output,
+    input,
+    grid,
+    interpolation_mode,
+    padding_mode,
+    align_corners,
+    output_mask,
+):
+    input_requires_grad = output_mask[0]
+    if input_requires_grad:
+        grad_input = torch.zeros_like(input, memory_format=torch.contiguous_format)
+    else:
+        grad_input = None
+    grad_grid = torch.empty_like(grid, memory_format=torch.contiguous_format)
+    return (grad_input, grad_grid)
 
 
 @register_meta([aten.full.default])
