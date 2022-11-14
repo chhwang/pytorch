@@ -20,7 +20,9 @@ void PySavedVariableHooks::call_pack_hook(const at::Tensor& tensor) {
   auto wrapped = THPVariable_Wrap(tensor);
   py::object obj = py::reinterpret_steal<py::object>(wrapped);
   py::object packed = pack_hook(obj);
-  data_ = packed.release().ptr();
+  // changho: 
+  // data_ = packed.release().ptr();
+  data_ = packed.ptr();
   // pack_hook, obj are decrefed on exit
   // wrapped and packed had their references stolen
   // pack_hook_ and data_ will be manually decrefed when the saved variable is
@@ -49,7 +51,8 @@ PySavedVariableHooks::~PySavedVariableHooks() {
     py::gil_scoped_acquire gil;
     Py_XDECREF(pack_hook_);
     Py_XDECREF(unpack_hook_);
-    Py_XDECREF(data_);
+    // changho:
+    // Py_XDECREF(data_);
   }
 }
 
